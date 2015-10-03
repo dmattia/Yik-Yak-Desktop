@@ -4,7 +4,8 @@ from blog import views
 
 urlpatterns = [
     url(r'^$', views.index, name='blogList'),
-    url(r'^top/', views.top, name='topYaks'),
-    url(r'^myYaks/', views.myYaks, name='myYaks'),
-    url(r'^myTop/', views.myTopYaks, name='myTopYaks'),
+    url(r'^top/$', views.top, name='topYaks'),
+    url(r'^myYaks/$', views.myYaks, name='myYaks'),
+    url(r'^myTop/$', views.myTopYaks, name='myTopYaks'),
+    url(r'R/([0-9a-zA-Z]+)/', views.viewYak, name='yak'),
 ]

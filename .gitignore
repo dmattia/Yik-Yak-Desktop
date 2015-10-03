@@ -5,3 +5,4 @@ yikyhack/blog/userID
 yikyhack/blog/nickID
 *.pyc
 run.sh
+*.swp

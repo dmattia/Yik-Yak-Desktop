@@ -20,5 +20,6 @@ from blog import views
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', views.index, name='home-index'),
+    url(r'R/([0-9a-zA-Z]+)/', views.viewYak, name='yak'),
     url(r'^blog/', include('blog.urls')),
 ]
