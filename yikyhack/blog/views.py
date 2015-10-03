@@ -19,7 +19,33 @@ def setup():
 
 # Create your views here.
 def index(request):
-	return render(request, 'index.html', {'yakker': setup()})
+	yakker = setup()
+	params = {
+		'yakarma': yakker.get_yakarma,
+		'yakList': yakker.get_yaks
+	}
+	return render(request, 'yakList.html', params)
 
 def top(request):
-	return render(request, 'tops.html', {'yakker': setup()})
+	yakker = setup()
+	params = {
+		'yakarma': yakker.get_yakarma,
+		'yakList': yakker.get_area_tops
+	}
+	return render(request, 'yakList.html', params)
+
+def myTopYaks(request):
+	yakker = setup()
+	params = {
+		'yakarma': yakker.get_yakarma,
+		'yakList': yakker.get_my_tops
+	}
+	return render(request, 'yakList.html', params)
+
+def myYaks(request):
+	yakker = setup()
+	params = {
+		'yakarma': yakker.get_yakarma,
+		'yakList': yakker.get_my_recent_yaks
+	}
+	return render(request, 'yakList.html', params)

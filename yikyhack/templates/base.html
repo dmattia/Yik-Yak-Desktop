@@ -11,6 +11,9 @@
     <div id="header">
     {% block header %}{% endblock %}
     <a href="{% url 'home-index' %}">{% trans "Home" %}</a> | 
+    <a href="{% url 'topYaks' %}">{% trans "Top Yaks" %}</a> | 
+    <a href="{% url 'myTopYaks' %}">{% trans "My Top Yaks" %}</a> | 
+    <a href="{% url 'myYaks' %}">{% trans "My Yaks" %}</a> | 
     </div>
 
     <div id="content">

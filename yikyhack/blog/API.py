@@ -70,6 +70,9 @@ class Comment:
 	def getPoster(self):
 		return self.poster_id
 
+	def getComment(self):
+		return self.comment
+
 	def report(self):
 		return self.client.report_comment(self.comment_id, self.message_id)
 
@@ -80,31 +83,12 @@ class Comment:
 	def reply(self, comment):
 		return self.client.post_comment(self.message_id, comment)
 
-	def print_comment(self):
-		try:
-			my_action = ""
-			if self.liked > 0:
-				my_action = "^ "
-			elif self.liked < 0:
-				my_action = "v "
-			print ("\t\t%s(%s) %s \n\n\t\tPosted  %s" % (my_action, self.likes, self.comment, self.time))
-		# Fix for emoji crash: filter emoji if not supported
-		except UnicodeEncodeError:
-			self.comment = re.sub('[^\x00-\x7F]', '',self.comment)
-			my_action = ""
-			if self.liked > 0:
-				my_action = "^ "
-			elif self.liked < 0:
-				my_action = "v "
-			print ("\t\t%s(%s) %s \n\n\t\tPosted  %s" % (my_action, self.likes, self.comment, self.time))
-
 class Yak:
 	def __init__(self, raw, client):
 		self.client = client
 		self.poster_id = raw["posterID"]
 		self.hide_pin = bool(int(raw["hidePin"]))
 		self.message_id = raw["messageID"]
-		self.raw = raw
 		try:
 			self.delivery_id = raw["deliveryID"]
 		except KeyError:
@@ -136,9 +120,6 @@ class Yak:
 		except:
 			pass
 
-	def getPoster(self):
-		return self.client
-
 	def upvote(self):
 		if self.liked == 0:
 			self.liked += 1
@@ -163,35 +144,6 @@ class Yak:
 
 	def get_comments(self):
 		return self.client.get_comments(self.message_id)
-
-	def print_yak(self):
-		try:
-			if self.handle is not None:
-				print ("### %s ###" % self.handle)
-			print ()
-			print (self.message)
-			# Show arrow if yak is upvoted or downvoted
-			my_action = ""
-			if self.liked > 0:
-				my_action = "^ "
-			elif self.liked < 0:
-				my_action = "v "
-			print ("\n\t%s%s likes  |  Posted  %s  at  %s %s" % (my_action, self.likes, self.time, self.latitude, self.longitude))
-			print (self.raw)
-		# Fix for emoji crash: filter emoji if not supported
-		except UnicodeEncodeError:
-			self.message = re.sub('[^\x00-\x7F]', '',self.message)
-			if self.handle is not None:
-				print ("### %s ###" % self.handle.encode('utf-8').strip())
-			print ()
-			print (self.message)
-			# Show arrow if yak is upvoted or downvoted
-			my_action = ""
-			if self.liked > 0:
-				my_action = "^ "
-			elif self.liked < 0:
-				my_action = "v "
-			print ("\n\t%s%s likes  |  Posted  %s  at  %s %s" % (my_action, self.likes, self.time, self.latitude, self.longitude))
 
 class Yakker:
 	base_url = "https://us-east-api.yikyakapi.net/api/"
