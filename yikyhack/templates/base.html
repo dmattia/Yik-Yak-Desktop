@@ -5,15 +5,40 @@
 <head>
     <link rel="stylesheet" href="{{ STATIC_URL }}style.css" />
     <title>{% block title %}Yik Yhack{% endblock %}</title>
+    <style>
+	body {
+	    background-color: #30dbbd;
+	    color: #FFF;
+	    font-size: 24px;
+	}
+
+	.yakList {
+	    background-color: #FFF;
+	    color: #333;
+	}
+
+	.likes {
+	    color: #0dd5b2;
+	}
+
+	a {
+		color: #FFF;
+		text-decoration: none;
+	}
+
+	.yak a {
+		color: #333;
+	}
+    </style>
 </head>
 
 <body>
     <div id="header">
-    {% block header %}{% endblock %}
-    <a href="{% url 'home-index' %}">{% trans "Home" %}</a> | 
+    <a href="{% url 'blogList' %}">{% trans "Recent Yaks" %}</a> | 
     <a href="{% url 'topYaks' %}">{% trans "Top Yaks" %}</a> | 
     <a href="{% url 'myTopYaks' %}">{% trans "My Top Yaks" %}</a> | 
     <a href="{% url 'myYaks' %}">{% trans "My Yaks" %}</a> | 
+    {% block header %}{% endblock %}
     </div>
 
     <div id="content">
@@ -21,9 +46,7 @@
     </div>
 
     <div id="footer">
-    {% block footer %}
-        <hr />
-    {% endblock %}
+    {% block footer %}{% endblock %}
     </div>
 </body>
 

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+	<div class="yak">
+		<h2>{{ yak.likes }}</h2>
+		<h3>{{ yak.message}}</h3>
+		
+		{% if yak.comments > 0 %}
+			<div class="comments">
+				<ol>
+					{% for comment in yak.get_comments %}
+						<li><strong>{{ comment.likes }}</strong>  {{ comment.getComment }}</li>
+					{% endfor %}
+				</ol>
+			</div>
+		{% endif %}
+	</div>
+{% endblock %}

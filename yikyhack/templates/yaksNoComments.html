@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block header %}
+	<h2>Yakarma: {{ yakarma }}</h2>
+{% endblock %}
+
+{% block content %}
+	<div class="yakList">
+	<ol>
+	{% for yak in yakList %}
+		{% if yak.likes != 10000 %}
+			<div class="yak">
+				<h4 class="likes">Likes: {{ yak.likes }}</h4>
+				<p>{{ yak.message }}</p>
+				<a href="{{ yak.message_id }}">{{ yak.comments }} Comments</a>
+			</div>
+			<hr>
+		{% endif %}
+	{% endfor %}
+	</ol>
+	</div>
+{% endblock %}
