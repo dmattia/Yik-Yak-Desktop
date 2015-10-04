@@ -21,6 +21,11 @@
 				</h4>
 				<p>{{ yak.message }}</p>
 				<a href="{{ yak.message_id }}">{{ yak.comments }} Comments</a>
+				<form id="upvoteForm" method="post", action="">
+					{% csrf_token %}
+					<input type="hidden" value="{{ yak.message_id }}" name="upvote">
+					<button id="upvote" type="submit">^</button>
+				</form>
 			</div>
 			<hr>
 		{% endif %}

@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.http import HttpResponse
 from django.shortcuts import render
 import API as pk
 import pygeocoder
@@ -39,52 +40,106 @@ def setup(request):
 	# User Setup
 	remoteyakker = pk.Yakker(userID, coordlocation, False)
 
-	return remoteyakker 
+	searchTerm = False
+	if request.method == 'POST':
+		if "upvote" in request.POST:
+			remoteyakker.upvote_yak(p["upvote"])
+		if "searchTerm" in request.POST:
+			searchTerm = p["searchTerm"]
 
-def index(request):
-	yakker = setup(request)
-	yaks = yakker.get_yaks()
+	return remoteyakker, searchTerm 
+
+def search(request):
+	yakker, searchTerm = setup(request)
+	matchingYaks = set([])
+	yaks = yakker.get_yaks() + yakker.get_area_tops() + yakker.get_my_tops()
+	for yak in yaks:
+		if(searchTerm in yak.message):
+			matchingYaks.add(yak) 
+
 	params = {
 		'yakarma': yakker.get_yakarma,
-		'yakList': yaks,
-		'yakCount': len(yaks)
+		'yakList': matchingYaks,
+		'yakCount': len(matchingYaks)
+	}
+	return render(request, 'yaksNoComments.html', params)
+
+def index(request):
+	yakker, searchTerm = setup(request)
+	yaks = yakker.get_yaks()
+	searchedYaks = []
+	if searchTerm:
+		for yak in yaks:
+			if(searchTerm in yak.message):
+				searchedYaks.append(yak) 
+	else:
+		searchedYaks = yaks
+	
+	params = {
+		'yakarma': yakker.get_yakarma,
+		'yakList': searchedYaks,
+		'yakCount': len(searchedYaks)
 	}
 	return render(request, 'yaksNoComments.html', params)
 
 def top(request):
-	yakker = setup(request)
+	yakker, searchTerm = setup(request)
 	yaks = yakker.get_area_tops()
+	searchedYaks = []
+	if searchTerm:
+		for yak in yaks:
+			if(searchTerm in yak.message):
+				searchedYaks.append(yak) 
+	else:
+		searchedYaks = yaks
+
 	params = {
 		'yakarma': yakker.get_yakarma,
-		'yakList': yaks,
-		'yakCount': len(yaks)
+		'yakList': searchedYaks,
+		'yakCount': len(searchedYaks)
 	}
 	return render(request, 'yaksNoComments.html', params)
 
 def myTopYaks(request):
-	yakker = setup(request)
+	yakker, searchTerm = setup(request)
 	yaks = yakker.get_my_tops()
+	searchedYaks = []
+	if searchTerm:
+		for yak in yaks:
+			if(searchTerm in yak.message):
+				searchedYaks.append(yak) 
+	else:
+		searchedYaks = yaks
+
 	params = {
 		'yakarma': yakker.get_yakarma,
-		'yakList': yaks,
-		'yakCount': len(yaks)
+		'yakList': searchedYaks,
+		'yakCount': len(searchedYaks)
 	}
 	return render(request, 'yaksNoComments.html', params)
 
 def myYaks(request):
-	yakker = setup(request)
+	yakker, searchTerm = setup(request)
 	yaks = yakker.get_my_recent_yaks()
+	searchedYaks = []
+	if searchTerm:
+		for yak in yaks:
+			if(searchTerm in yak.message):
+				searchedYaks.append(yak) 
+	else:
+		searchedYaks = yaks
+
 	params = {
 		'yakarma': yakker.get_yakarma,
-		'yakList': yaks,
-		'yakCount': len(yaks)
+		'yakList': searchedYaks,
+		'yakCount': len(searchedYaks)
 	}
 	return render(request, 'yaksNoComments.html', params)
 
 def findYak(yakID):
-	yakker = setup(request)
-	allYaks = yakker.get_yaks() + yakker.get_area_tops() + yakker.get_my_tops()
-	for yak in allYaks:
+	yakker, searchTerm = setup(request)
+	yaks = yakker.get_yaks() + yakker.get_area_tops() + yakker.get_my_tops()
+	for yak in yaks:
 		if(yak.message_id == yakID):
 			return yak
 	return False
