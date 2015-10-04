@@ -14,9 +14,10 @@ from hashlib import md5
 
 def parse_time(timestr):
 	format = "%Y-%m-%d %H:%M:%S"
-	return datetime.datetime.fromtimestamp(
-		time.mktime(time.strptime(timestr, format))
-	).strftime('%Y-%m-%d %H:%M:%S')
+	#return datetime.datetime.fromtimestamp(
+	#	time.mktime(time.strptime(timestr, format))
+	#).strftime('%d %m %Y  %H:%M:%S')
+	return datetime.datetime.strptime(timestr,format)
 
 class Location:
 	def __init__(self, latitude, longitude, delta=None):

@@ -11,7 +11,13 @@
 	<ol>
 	{% for yak in yakList %}
 		{% if yak.likes != 10000 %}
-			<div class="yak">
+			<div class="yak" style="display: flex;">
+				<div class="left" style="float:left; width: 20%;">
+				<form id="upvoteForm" method="post", action="">
+					{% csrf_token %}
+					<input type="hidden" value="{{ yak.message_id }}" name="upvote">
+					<button id="upvote" type="submit" style="border:none;background:none;"><i class="fa fa-angle-double-up fa-4x likes"></i></button>
+				</form>
 				<h4 class="likes">
 					{% if yak.liked == 1 %} &#9650
 					{% elif yak.liked == 0 %} -
@@ -19,13 +25,22 @@
 					{% endif %}
 					Likes: {{ yak.likes }}
 				</h4>
-				<p>{{ yak.message }}</p>
-				<a href="{{ yak.message_id }}">{{ yak.comments }} Comments</a>
-				<form id="upvoteForm" method="post", action="">
+				<form id="downvoteForm" method="post", action="">
 					{% csrf_token %}
-					<input type="hidden" value="{{ yak.message_id }}" name="upvote">
-					<button id="upvote" type="submit">^</button>
+					<input type="hidden" value="{{ yak.message_id }}" name="downvote">
+					<button id="downvote" type="submit" style="border:none;background:none;"><i class="fa fa-angle-double-down fa-4x likes"></i></button>
 				</form>
+				</div>
+				<div class="right" style="float:right; width:60%;display:flex;align-items:center">
+					<div style="-webkit-transform:translateY(-10%);">
+						<p>{{ yak.message }}</p>
+						<a href="{{ yak.message_id }}">{{ yak.comments }} Comments</a>
+					</div>
+					{% load humanize %}
+				</div>
+				<div style="align-self:flex-end; justify-content:flex-end;">
+					<p style="color:#637370;">{{ yak.time|naturaltime }}</p>
+				</div>
 			</div>
 			<hr>
 		{% endif %}
@@ -33,7 +48,7 @@
 	</ol>
 	</div>
 	{% else %}
-	<div class="yakList">
+	<div class="yakList" style="margin-top:40px;">
 		<div class="yak" style="padding-top: 5px; padding-bottom: 15px;">
 			<h4 class="likes">Likes: 10000</h4>
 			<p>There aren't any yaks for this userID in this area.</p>

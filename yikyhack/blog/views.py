@@ -44,6 +44,8 @@ def setup(request):
 	if request.method == 'POST':
 		if "upvote" in request.POST:
 			remoteyakker.upvote_yak(p["upvote"])
+		if "downvote" in request.POST:
+			remoteyakker.downvote_yak(p["downvote"])
 		if "searchTerm" in request.POST:
 			searchTerm = p["searchTerm"]
 
@@ -136,7 +138,7 @@ def myYaks(request):
 	}
 	return render(request, 'yaksNoComments.html', params)
 
-def findYak(yakID):
+def findYak(request, yakID):
 	yakker, searchTerm = setup(request)
 	yaks = yakker.get_yaks() + yakker.get_area_tops() + yakker.get_my_tops()
 	for yak in yaks:
@@ -147,8 +149,7 @@ def findYak(yakID):
 
 def viewYak(request, yakNum):
 	# find the yak cooresponding to yakNum
-	desiredID = 'R/' + yakNum
-	yak = findYak(desiredID)
+	yak = findYak(request, 'R/' + yakNum)
 	if yak:
 		return render(request, 'yak.html', {'yak': yak})	
 	return render(request, 'yakNotFound.html');
