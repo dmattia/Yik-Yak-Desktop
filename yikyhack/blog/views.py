@@ -78,7 +78,7 @@ def index(request):
 	params = {
 		'yakarma': yakker.get_yakarma,
 		'yakList': searchedYaks,
-		'yakCount': len(searchedYaks)
+		'yakCount': len(searchedYaks)+1 if searchTerm else len(searchedYaks)
 	}
 	return render(request, 'yaksNoComments.html', params)
 
@@ -96,7 +96,7 @@ def top(request):
 	params = {
 		'yakarma': yakker.get_yakarma,
 		'yakList': searchedYaks,
-		'yakCount': len(searchedYaks)
+		'yakCount': len(searchedYaks)+1 if searchTerm else len(searchedYaks)
 	}
 	return render(request, 'yaksNoComments.html', params)
 
@@ -114,7 +114,7 @@ def myTopYaks(request):
 	params = {
 		'yakarma': yakker.get_yakarma,
 		'yakList': searchedYaks,
-		'yakCount': len(searchedYaks)
+		'yakCount': len(searchedYaks)+1 if searchTerm else len(searchedYaks)
 	}
 	return render(request, 'yaksNoComments.html', params)
 
@@ -132,7 +132,7 @@ def myYaks(request):
 	params = {
 		'yakarma': yakker.get_yakarma,
 		'yakList': searchedYaks,
-		'yakCount': len(searchedYaks)
+		'yakCount': len(searchedYaks)+1 if searchTerm else len(searchedYaks)
 	}
 	return render(request, 'yaksNoComments.html', params)
 
