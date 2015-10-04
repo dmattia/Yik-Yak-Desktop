@@ -1,0 +1,22 @@
+{
+  "name": "yikyhack",
+  "version": "0.0.0",
+  "homepage": "https://github.com/dmattia/Yik-Yak-Desktop",
+  "description": "",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.1.0",
+    "iron-flex-layout": "PolymerElements/iron-flex-layout#~1.0.4",
+    "paper-header-panel": "PolymerElements/paper-header-panel#~1.0.5",
+    "paper-toolbar": "PolymerElements/paper-toolbar#~1.0.4"
+  }
+}

@@ -13,12 +13,15 @@ Including another URLconf
     1. Add an import:  from blog import urls as blog_urls
     2. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
 """
+from django.contrib.auth import views as auth_views
 from django.conf.urls import include, url
 from django.contrib import admin
-from blog import views
+from blog import views, regbackend
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^accounts/register/$', regbackend.MyRegistrationView.as_view(), name="register"),
+    url(r'^accounts/', include('registration.backends.default.urls')),
     url(r'^$', views.index, name='home-index'),
     url(r'R/([0-9a-zA-Z]+)/', views.viewYak, name='yak'),
     url(r'^blog/', include('blog.urls')),

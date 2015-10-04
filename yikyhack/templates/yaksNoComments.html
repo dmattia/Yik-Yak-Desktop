@@ -6,12 +6,19 @@
 {% endblock %}
 
 {% block content %}
+	{% if yakCount > 1 %}
 	<div class="yakList">
 	<ol>
 	{% for yak in yakList %}
 		{% if yak.likes != 10000 %}
 			<div class="yak">
-				<h4 class="likes">Likes: {{ yak.likes }}</h4>
+				<h4 class="likes">
+					{% if yak.liked == 1 %} &#9650
+					{% elif yak.liked == 0 %} -
+					{% else %} &#9660
+					{% endif %}
+					Likes: {{ yak.likes }}
+				</h4>
 				<p>{{ yak.message }}</p>
 				<a href="{{ yak.message_id }}">{{ yak.comments }} Comments</a>
 			</div>
@@ -20,4 +27,13 @@
 	{% endfor %}
 	</ol>
 	</div>
+	{% else %}
+	<div class="yakList">
+		<div class="yak" style="padding-top: 5px; padding-bottom: 15px;">
+			<h4 class="likes">Likes: 100000</h4>
+			<p>There aren't any yaks for this userID in this area.</p>
+			<a href="">0 Comments</a>
+		</div>
+	</div>
+	{% endif %}
 {% endblock %}
