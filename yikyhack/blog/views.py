@@ -22,11 +22,11 @@ def loadFromSession(session):
 	else:
 		userID = '70FB6DD23A2147CBC544154DAE8564D9'
 		session['userID'] = userID
-	return lat, longt, userID
+	return lat, longt, userID, session
 	
 
 def setup(request):
-	geocoder = pygeocoder.Geocoder("AIzaSyAGeW6l17ATMZiNTRExwvfa2iuPA1DvJqM")
+	#geocoder = pygeocoder.Geocoder("AIzaSyAGeW6l17ATMZiNTRExwvfa2iuPA1DvJqM")
 
 	if request.method == 'POST':
 		p = request.POST
@@ -42,32 +42,28 @@ def setup(request):
 				if locationAndIdForm['userID'] is not None:
 					userID = locationAndIdForm.cleaned_data['userID']
 					request.session['userID'] = userID
-		else:
-			lat, longt, userID = loadFromSession(request.session)
-			searchTerm = False
 		if 'searchSubmit' in p:
 			if search.is_valid():
 				searchTerm = search.cleaned_data['searchText']
-				lat, longt, userID = loadFromSession(request.session)
+				if len(searchTerm == 0): searchTerm = False
 		else:
 			searchTerm = False
-			lat, longt, userID = loadFromSession(request.session)
 		if "upvote" in p:
-			lat, longt, userID = loadFromSession(request.session)
+			lat, longt, userID, request.session = loadFromSession(request.session)
 			coordlocation = pk.Location(lat, longt)
 			remoteyakker = pk.Yakker(userID, coordlocation, False)
 			remoteyakker.upvote_yak(p["upvote"])
 		if "downvote" in p:
-			lat, longt, userID = loadFromSession(request.session)
+			lat, longt, userID, request.session = loadFromSession(request.session)
 			coordlocation = pk.Location(lat, longt)
 			remoteyakker = pk.Yakker(userID, coordlocation, False)
 			remoteyakker.downvote_yak(p["downvote"])
 	else:
-		lat, longt, userID = loadFromSession(request.session)
 		searchTerm = False
 		locationAndIdForm = userForm()
 		search = searchForm()
 
+	lat, longt, userID, request.session = loadFromSession(request.session)
 	coordlocation = pk.Location(lat, longt)
 	remoteyakker = pk.Yakker(userID, coordlocation, False)
 
@@ -78,7 +74,7 @@ def search(request):
 	matchingYaks = set([])
 	yaks = yakker.get_yaks() + yakker.get_area_tops() + yakker.get_my_tops()
 	for yak in yaks:
-		if(searchTerm in yak.message):
+		if(searchTerm.lower() in yak.message.lower()):
 			matchingYaks.add(yak) 
 
 	params = {
@@ -96,7 +92,7 @@ def index(request):
 	searchedYaks = []
 	if searchTerm:
 		for yak in yaks:
-			if(searchTerm in yak.message):
+			if(searchTerm.lower() in yak.message.lower()):
 				searchedYaks.append(yak) 
 	else:
 		searchedYaks = yaks
@@ -116,7 +112,7 @@ def top(request):
 	searchedYaks = []
 	if searchTerm:
 		for yak in yaks:
-			if(searchTerm in yak.message):
+			if(searchTerm.lower() in yak.message.lower()):
 				searchedYaks.append(yak) 
 	else:
 		searchedYaks = yaks
@@ -136,7 +132,7 @@ def myTopYaks(request):
 	searchedYaks = []
 	if searchTerm:
 		for yak in yaks:
-			if(searchTerm in yak.message):
+			if(searchTerm.lower() in yak.message.lower()):
 				searchedYaks.append(yak) 
 	else:
 		searchedYaks = yaks
@@ -156,7 +152,7 @@ def myYaks(request):
 	searchedYaks = []
 	if searchTerm:
 		for yak in yaks:
-			if(searchTerm in yak.message):
+			if(searchTerm.lower() in yak.message.lower()):
 				searchedYaks.append(yak) 
 	else:
 		searchedYaks = yaks
