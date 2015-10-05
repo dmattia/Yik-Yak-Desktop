@@ -16,12 +16,10 @@ Including another URLconf
 from django.contrib.auth import views as auth_views
 from django.conf.urls import include, url
 from django.contrib import admin
-from blog import views, regbackend
+from blog import views
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^accounts/register/$', regbackend.MyRegistrationView.as_view(), name="register"),
-    url(r'^accounts/', include('registration.backends.default.urls')),
     url(r'^$', views.index, name='home-index'),
     url(r'R/([0-9a-zA-Z]+)/', views.viewYak, name='yak'),
     url(r'^blog/', include('blog.urls')),

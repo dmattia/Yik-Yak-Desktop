@@ -479,7 +479,10 @@ class Yakker:
 			"userLong": self.location.longitude,
 		}
 		data = self.get("getMessages", params).json()
-		return int(data['yakarma'])
+		yakarma = int(data['yakarma'])
+		if yakarma:
+			return yakarma
+		return 100
 
 	def peek(self, peek_id):
 		if isinstance(peek_id, PeekLocation):

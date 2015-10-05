@@ -25,6 +25,7 @@
 
 	.likes {
 	    color: #0dd5b2;
+	    margin-left: 0px;
 	}
 
 	a {
@@ -68,7 +69,7 @@
 		display: none; 
 	}
 	
-	input[type=search] {
+	#id_searchText {
 		background: #ededed url(http://static.tumblr.com/ftv85bp/MIXmud4tx/search-icon.png) no-repeat 9px center;
 		border: solid 1px #ccc;
 		padding: 9px 10px 9px 32px;
@@ -83,7 +84,7 @@
 		transition: all .5s;
 	}
 
-	input[type=search]:focus {
+	#id_searchText:focus {
 		width: 60%;
 		background-color: #fff;
 		border-color: #66CC75;
@@ -93,15 +94,24 @@
 		box-shadow: 0 0 5px rgba(109,207,246,.5);
 	}
 
-	.locations {
+	#id_longitude, #id_latitude {
 		background: #ededed url(http://dealer-locator.michelinman.com/templates/michelin/template-desktop-worlwide/versions/1317/images/ico_website.png) no-repeat 9px center;
+		margin-right: 20px;
 	}
 
-	input[type=text] {
-		background: #ededed;
+	#userid {
+		background-color:#ededed;
+	}
+
+	#userid:focus {
+		background-color:#fff;
+	}
+
+	input[type=number], input[type=text] {
 		border: solid 1px #ccc;
 		padding: 9px 10px 9px 32px;
-		width: 10%;
+		margin-left: 5px;
+		width: 3%;
 		
 		-webkit-border-radius: 10em;
 		-moz-border-radius: 10em;
@@ -112,7 +122,7 @@
 		transition: all .5s;
 	}
 
-	input[type=text]:focus {
+	input[type=number]:focus, input[type=text]:focus {
 		width: 15%;
 		background-color: #fff;
 		border-color: #66CC75;
@@ -125,10 +135,11 @@
 	input:-moz-placeholder {
 		color: #999;
 	}
-	input::-webkit-input-placeholder {
+
+	input:-webkit-input-placeholder {
 		color: #999;
 	}
-
+	
 	{% block styles %}
 	{% endblock %}
     </style>
@@ -137,26 +148,20 @@
 <body>
 	<paper-header-panel class="flex">
 	<paper-toolbar>
-	    <div id="header">
+	    <div id="header" style="width:90%;-webkit-transform:translateX(5%);">
 	    <div class="top-row" style="display:flex; justify-content: space-around;">
 		    <div style="order:1;">
 		    {% block header %}{% endblock %}
 		    </div>
 		    <div style="order:1; align-self:center;">
-	            <form id="loc_change" method="post", action="">
+	            <form id="loc_change" method="post", action="" style="display:flex; justify-content:flex-end;">
 	                {% csrf_token %}
-	                Latitude:
-	                <input class="locations" type="text" name="latitude">
-	                Longitude:
-	                <input class="locations" type="text" name="longtitude">
-	                User ID:
-	                <input type="text" name="userID">
-			<input type="submit" style="visibility: hidden;" />
-	                <!--<input type="submit" name="submit" value="Update">-->
+			{{ form }}
+			<input style="display:none;" type="submit" name="userSubmit" value="Submit"/>
 	            </form>
 		    </div>
 	    </div>
-	    <div class="links" style="width: 100%; display:flex;justify-content:space-around;">
+	    <div class="links" style="background-color:rgba(255,255,255,0.2);border-radius:20px;width: 100%; display:flex;justify-content:space-around;">
 		    <a style="order:1" href="{% url 'blogList' %}">{% trans "Recent Yaks" %}</a> 
 		    <a style="order:1" href="{% url 'topYaks' %}">{% trans "Top Yaks" %}</a> 
 		    <a style="order:1" href="{% url 'myTopYaks' %}">{% trans "My Top Yaks" %}</a> 
@@ -164,7 +169,8 @@
 	    </div>
 	    <form id="search" method="post", action="", style="margin-top:40px; display:flex; justify-content:center;">
 		{% csrf_token %}
-		<input type="search" name="searchTerm" placeholder="Search" id="search">
+		{{ searchForm }}
+		<input style="display:none;" type="submit" name="searchSubmit" value="Submit"/>
 	    </form>
 	    </div>
 	<paper-toolbar>

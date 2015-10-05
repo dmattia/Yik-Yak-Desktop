@@ -1,9 +1,11 @@
 from django.db import models
 from django.contrib import admin
+from django import forms
 
-class UserProfile(models.Model):
-	latitude = models.FloatField()
-	longitude = models.FloatField()
-	userID = models.CharField(max_length=255)
+class userForm(forms.Form):
+	latitude = forms.FloatField(required = False)
+	longitude = forms.FloatField(required = False)
+	userID = forms.CharField(max_length = 50, required = False)	
 
-admin.site.register(UserProfile)
+class searchForm(forms.Form):
+	searchText = forms.CharField(max_length=100, required = False)
