@@ -1,11 +1,11 @@
+from django.contrib.auth.decorators import login_required
+from models import userForm, searchForm
 from django.http import HttpResponse
 from django.shortcuts import render
-import API as pk
 import pygeocoder
+import API as pk
 import requests
 import random
-from models import userForm, searchForm
-from django.contrib.auth.decorators import login_required
 
 def loadFromSession(session):
 	if 'latitude' in session:
