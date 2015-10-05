@@ -5,6 +5,7 @@ import pygeocoder
 import requests
 import random
 from models import userForm, searchForm
+from django.contrib.auth.decorators import login_required
 
 def loadFromSession(session):
 	if 'latitude' in session:
@@ -69,6 +70,7 @@ def setup(request):
 
 	return remoteyakker, searchTerm, locationAndIdForm, search
 
+@login_required
 def search(request):
 	yakker, searchTerm, locationAndIdForm, search = setup(request)
 	matchingYaks = set([])
@@ -86,6 +88,7 @@ def search(request):
 	}
 	return render(request, 'yaksNoComments.html', params)
 
+@login_required
 def index(request):
 	yakker, searchTerm, locationAndIdForm, search = setup(request)
 	yaks = yakker.get_yaks()
@@ -106,6 +109,7 @@ def index(request):
 	}
 	return render(request, 'yaksNoComments.html', params)
 
+@login_required
 def top(request):
 	yakker, searchTerm, locationAndIdForm, search = setup(request)
 	yaks = yakker.get_area_tops()
@@ -126,6 +130,7 @@ def top(request):
 	}
 	return render(request, 'yaksNoComments.html', params)
 
+@login_required
 def myTopYaks(request):
 	yakker, searchTerm, locationAndIdForm, search = setup(request)
 	yaks = yakker.get_my_tops()
@@ -146,6 +151,7 @@ def myTopYaks(request):
 	}
 	return render(request, 'yaksNoComments.html', params)
 
+@login_required
 def myYaks(request):
 	yakker, searchTerm, locationAndIdForm, search = setup(request)
 	yaks = yakker.get_my_recent_yaks()
@@ -175,6 +181,7 @@ def findYak(request, yakID):
 	return False
 	
 
+@login_required
 def viewYak(request, yakNum):
 	# find the yak cooresponding to yakNum
 	yak = findYak(request, 'R/' + yakNum)

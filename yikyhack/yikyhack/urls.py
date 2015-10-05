@@ -6,10 +6,11 @@ from blog import views
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     # blog views
-    url(r'^$', views.index, name='home-index'),
-    url(r'R/([0-9a-zA-Z]+)/', views.viewYak, name='yak'),
-    url(r'^blog/', include('blog.urls')),
+    url(r'^$', 'yikyhack.views.login', name='home-index'),
+    url(r'^accounts/R/([0-9a-zA-Z]+)/', views.viewYak, name='yak'),
+    url(r'^accounts/blog/', include('blog.urls')),
     # user auth views
+    url(r'^accounts/', include('userprofile.urls')),
     url(r'^accounts/login/$', 'yikyhack.views.login'),
     url(r'^accounts/auth/$', 'yikyhack.views.auth_view'),
     url(r'^accounts/logout/$', 'yikyhack.views.logout'),

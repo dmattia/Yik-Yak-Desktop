@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+	<h2>Profile</h2>
+	{% for field in userForm %}
+		{{ field.error }}
+	{% endfor %}
+
+	<form action="/accounts/profile/" method="post">
+		{% csrf_token %}
+		{{ userForm.as_ul }}
+		<input type="submit" value="Update"/>
+	</form>
+
+{% endblock %}
