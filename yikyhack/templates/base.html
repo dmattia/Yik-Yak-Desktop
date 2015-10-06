@@ -5,93 +5,66 @@
 <html lang="en">
 <head>
    <script src="{% static 'materialdjango/components/bower_components/webcomponentsjs/webcomponents-lite.js' %}"></script>
+    {% include 'material/includes/material_css.html' %}
+    {% include 'material/includes/material_js.html' %}
     {{ "polymer/polymer.html"|dep }}
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <title>{% block title %}Yik Yhack{% endblock %}</title>
     <style>
-	body {
-	    background-color: #30dbbd;
-	    color: #FFF;
-	    font-size: 24px;
-	    font-family: "Varela Round", sans-serif;
-	}
-
-	.yakList {
-	    background-color: #FFF;
-	    color: #333;
-	    border-radius: 30px;
-	}
-
-	.likes {
-	    color: #0dd5b2;
-	    margin-left: 0px;
-	}
-
-	a {
-		color: #FFF;
-		text-decoration: none;
-	}
-
-	a:hover {
-		text-decoration: underline;
-	}
-
-	.yak {
-		margin-left: 2%;
-	}
-
-	.yak a {
-		color: #333;
-	}
-
-	.comment {
-		margin-left: 5%;
-		padding-left: 20px;
-		border-left: 1px solid gray;
-	}
-
-	.comment p {
-		font-size: 20px;
-	}
-
-	{% block styles %}
-	{% endblock %}
+	.id_searchText {
+		width: 60%;
+   	}
     </style>
 </head>
 
-<body>
+<body class="{% if user.is_authenticated %}green lighten-5{% endif %}">
 	<paper-header-panel class="flex">
 	<paper-toolbar>
-	    <div id="header" style="width:90%;-webkit-transform:translateX(5%);">
-	    <div class="top-row" style="display:flex; justify-content: space-around; margin-bottom:20px;">
-		    <div style="order:1;">
+	    <nav>
+  	    <div class="nav-wrapper">
+  	      <a href="#" class="brand-logo">
 		    {% if user.is_authenticated %}
 		    {% block header %}{% endblock %}
 		    {% else %}
-			<h1>Yik Yhack</h1>
+			Yik Yhack
 		    {% endif %}
-		    </div>
-		    <div style="order:1; align-self:center;">
+	      </a>
+  	      <ul id="nav-mobile" class="right hide-on-med-and-down">
 		    {% if user.is_authenticated %}
-			<a href="/accounts/profile/">Update Profile</a> | 
-			<a href="/accounts/logout/">Logout</a>
+		    	<li class="{% if active == 'recent' %} active {% endif %}">
+				<a href="{% url 'blogList' %}">{% trans "Recent Yaks" %}</a>
+			</li>
+		   	<li class="{% if active == 'top' %} active {% endif %}">
+				<a href="{% url 'topYaks' %}">{% trans "Top Yaks" %}</a>
+			</li>
+		    	<li class="{% if active == 'myTop' %} active {% endif %}">
+				<a href="{% url 'myTopYaks' %}">{% trans "My Top Yaks" %}</a>
+			</li>
+		   	<li class="{% if active == 'myYaks' %} active {% endif %}">
+				<a href="{% url 'myYaks' %}">{% trans "My Yaks" %}</a>
+			</li>
+			<li><a href="/accounts/profile/">Update Profile</a></li> 
+			<li><a href="/accounts/logout/">Logout</a></li>
 		    {% else %}
-			<h2><a href="/accounts/login/">Log in</a></h2>
+			<li><a href="/accounts/login/">Log in</a></li>
 		    {% endif %}
-		    </div>
-	    </div>
-	    <div class="links" style="background-color:rgba(255,255,255,0.2);border-radius:20px;margin-bottom:20px;width: 100%; display:flex;justify-content:space-around;">
-		    <a style="order:1" href="{% url 'blogList' %}">{% trans "Recent Yaks" %}</a> 
-		    <a style="order:1" href="{% url 'topYaks' %}">{% trans "Top Yaks" %}</a> 
-		    <a style="order:1" href="{% url 'myTopYaks' %}">{% trans "My Top Yaks" %}</a> 
-		    <a style="order:1" href="{% url 'myYaks' %}">{% trans "My Yaks" %}</a> 
-	    </div>
-	    <form id="search" method="post", action="", style="margin-top:40px; margin-bottom: 20px;display:flex; justify-content:center;">
+  	      </ul>
+  	    </div>
+  	  </nav>
+	    {% if user.is_authenticated %}
+	    <div class="row">
+	    <form id="search" class="col s6 offset-s3" method="post", action="", style="margin-top:40px; margin-bottom: 20px;">
+		{% load material_form %} 
 		{% csrf_token %}
-		{{ searchForm }}
+		{% form form=searchForm %}
+			{% part form.searchText prefix %}<i class="material-icons prefix">search</i>{% endpart %}
+		{% endform %}
 		<input style="display:none;" type="submit" name="searchSubmit" value="Submit"/>
 	    </form>
+	    </div>
+	    {% endif %}
 	    </div>
 	<paper-toolbar>
 
