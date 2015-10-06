@@ -9,8 +9,12 @@
 
 	<form action="/accounts/profile/" method="post">
 		{% csrf_token %}
-		{{ userForm.as_ul }}
-		<input type="submit" value="Update"/>
+		{% load material_form %} 
+		{% form form=userForm %}{% endform %}
+		<!--<input type="submit" value="Update"/>-->
+		<button type="submit" name="_submit" class="z-depth-4 waves-effect btn btn-primary btn-lg">
+			Submit<i class="material-icons right">send</i>
+		</button>
 	</form>
 
 {% endblock %}

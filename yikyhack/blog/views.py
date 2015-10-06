@@ -51,6 +51,7 @@ def search(request):
 			matchingYaks.add(yak) 
 
 	params = {
+		'active': 'search',
 		'searchForm': search,
 		'yakarma': yakker.get_yakarma,
 		'yakList': matchingYaks,
@@ -71,6 +72,7 @@ def index(request):
 		searchedYaks = yaks
 	
 	params = {
+		'active': 'recent',
 		'searchForm': search,
 		'yakarma': yakker.get_yakarma,
 		'yakList': searchedYaks,
@@ -91,6 +93,7 @@ def top(request):
 		searchedYaks = yaks
 
 	params = {
+		'active': 'top',
 		'searchForm': search,
 		'yakarma': yakker.get_yakarma,
 		'yakList': searchedYaks,
@@ -111,6 +114,7 @@ def myTopYaks(request):
 		searchedYaks = yaks
 
 	params = {
+		'active': 'myTop',
 		'searchForm': search,
 		'yakarma': yakker.get_yakarma,
 		'yakList': searchedYaks,
@@ -131,6 +135,7 @@ def myYaks(request):
 		searchedYaks = yaks
 
 	params = {
+		'active': 'myYaks',
 		'searchForm': search,
 		'yakarma': yakker.get_yakarma,
 		'yakList': searchedYaks,

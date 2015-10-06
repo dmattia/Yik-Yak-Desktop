@@ -6,7 +6,9 @@
 	<form action="/accounts/register/" method="post">
 		{% csrf_token %}
 		{{ registerForm.as_ul }}
-		<input type="submit" value="Register"/>	
+		<button type="submit" name="_submit" class="z-depth-4 waves-effect btn btn-primary btn-lg">
+			Register<i class="material-icons right">send</i>
+		</button>
 	</form>
 
 {% endblock %}
