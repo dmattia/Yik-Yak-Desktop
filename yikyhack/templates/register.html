@@ -5,7 +5,7 @@
 	<h2>Register an account</h2>
 	<form action="/accounts/register/" method="post">
 		{% csrf_token %}
-		{{ registerForm }}
+		{{ registerForm.as_ul }}
 		<input type="submit" value="Register"/>	
 	</form>
 

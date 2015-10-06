@@ -20,7 +20,8 @@ def auth_view(request):
 		return HttpResponseRedirect('/accounts/invalid/')
 
 def loggedin(request):
-	return render_to_response('loggedin.html', {'full_name': request.user.username})
+	#return render_to_response('loggedin.html', {'full_name': request.user.username})
+	return HttpResponseRedirect('/accounts/blog/yaks/')
 
 def invalid_login(request):
 	return render_to_response('invalid_login.html')

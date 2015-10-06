@@ -1,13 +1,13 @@
 from django.contrib.auth import views as auth_views
 from django.conf.urls import include, url
 from django.contrib import admin
-from blog import views
+from blog import views as blog_views
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     # blog views
     url(r'^$', 'yikyhack.views.login', name='home-index'),
-    url(r'^accounts/R/([0-9a-zA-Z]+)/', views.viewYak, name='yak'),
+    url(r'^accounts/R/([0-9a-zA-Z]+)/', blog_views.viewYak, name='yak'),
     url(r'^accounts/blog/', include('blog.urls')),
     # user auth views
     url(r'^accounts/', include('userprofile.urls')),
