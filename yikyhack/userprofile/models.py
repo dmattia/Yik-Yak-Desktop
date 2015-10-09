@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-#class UserProfile(models.Model):
 class UserProfile(User):
 	user = models.OneToOneField(User)
 	userID = models.CharField(max_length=50)

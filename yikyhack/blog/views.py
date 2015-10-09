@@ -28,10 +28,12 @@ def setup(request):
 			coordlocation = pk.Location(lat, longt)
 			remoteyakker = pk.Yakker(userID, coordlocation, False)
 			remoteyakker.upvote_yak(p["upvote"])
+			remoteyakker.upvote_comment(p["upvote"])
 		if "downvote" in p:
 			coordlocation = pk.Location(lat, longt)
 			remoteyakker = pk.Yakker(userID, coordlocation, False)
 			remoteyakker.downvote_yak(p["downvote"])
+			remoteyakker.downvote_comment(p["downvote"])
 	else:
 		search = searchForm()
 		searchTerm = False
@@ -51,6 +53,7 @@ def search(request):
 			matchingYaks.add(yak) 
 
 	params = {
+		'showSearch': True,
 		'active': 'search',
 		'searchForm': search,
 		'yakarma': yakker.get_yakarma,
@@ -72,6 +75,7 @@ def index(request):
 		searchedYaks = yaks
 	
 	params = {
+		'showSearch': True,
 		'active': 'recent',
 		'searchForm': search,
 		'yakarma': yakker.get_yakarma,
@@ -93,6 +97,7 @@ def top(request):
 		searchedYaks = yaks
 
 	params = {
+		'showSearch': True,
 		'active': 'top',
 		'searchForm': search,
 		'yakarma': yakker.get_yakarma,
@@ -114,6 +119,7 @@ def myTopYaks(request):
 		searchedYaks = yaks
 
 	params = {
+		'showSearch': True,
 		'active': 'myTop',
 		'searchForm': search,
 		'yakarma': yakker.get_yakarma,
@@ -135,6 +141,7 @@ def myYaks(request):
 		searchedYaks = yaks
 
 	params = {
+		'showSearch': True,
 		'active': 'myYaks',
 		'searchForm': search,
 		'yakarma': yakker.get_yakarma,
@@ -156,6 +163,7 @@ def findYak(request, yakID):
 def viewYak(request, yakNum):
 	# find the yak cooresponding to yakNum
 	yak = findYak(request, 'R/' + yakNum)
+	yakker, searchTerm, search = setup(request)
 	if yak:
-		return render(request, 'yak.html', {'yak': yak})	
+		return render(request, 'yak.html', {'yak': yak, 'yakarma': yakker.get_yakarma})	
 	return render(request, 'yakNotFound.html');

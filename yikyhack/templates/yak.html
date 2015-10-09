@@ -1,24 +1,68 @@
 {% extends "base.html" %}
 {% load i18n %}
 
+{% block header %}
+	Yakarma: {{ yakarma }}
+{% endblock %}
+
 {% block content %}
-	<div class="yakList">
-	<div class="yak">
-		<h4 class="likes">Likes: {{ yak.likes }}</h4>
-		<p>{{ yak.message}}</p>
-		<hr>
-		
-		{% if yak.comments > 0 %}
-			<div class="comments">
-				{% for comment in yak.get_comments %}
-					<div class="comment">
-						<h5 class="likes">Likes: {{ comment.likes }}</h5>
-						<p>{{ comment.getComment }}</p>
-					</div>
-					<hr>
-				{% endfor %}
+	<div class="yak card z-depth-4 row white" style="display: flex;">
+		<div class="col s3" style="text-align:center;">
+		<form id="upvoteForm" method="post", action="">
+			{% csrf_token %}
+			<input type="hidden" value="{{ yak.message_id }}" name="upvote">
+			<button id="upvote" type="submit" style="border:none;background:none;"><i class="fa fa-angle-double-up fa-4x" style="color:{%if yak.liked == 1 %}#4CAF50;{%else%}#b2b2b2;{%endif%}"></i></button>
+		</form>
+		<h4 class="likes"> 
+			{{ yak.likes }}
+		</h4>
+		<form id="downvoteForm" method="post", action="">
+			{% csrf_token %}
+			<input type="hidden" value="{{ yak.message_id }}" name="downvote">
+			<button id="downvote" type="submit" style="border:none;background:none;"><i class="fa fa-angle-double-down fa-4x" style="color:{%if yak.liked == -1 %}#4CAF50;{%else%}#b2b2b2;{%endif%}"></i></button>
+		</form>
+		</div>
+		<div class="col s8" style="display:flex; align-items:center;">
+			<div style="-webkit-transform:translateY(-10%);">
+				<p>{{ yak.message }}</p>
+				<a href="{{ yak.message_id }}">{{ yak.comments }} Comments</a>
 			</div>
-		{% endif %}
+			{% load humanize %}
+		</div>
+		<div style="align-self:flex-end; justify-content:flex-end;">
+			<p style="color:#637370;">{{ yak.time|naturaltime }}</p>
+		</div>
 	</div>
-	</div>
+
+	{% if yak.comments > 0 %}
+		<div class="comments">
+			{% for comment in yak.get_comments %}
+				<div class="yak card z-depth-4 green lighten-5 row" style="display: flex;">
+					<div class="col s3" style="text-align:center;">
+						<form id="upvoteForm" method="post", action="">
+							{% csrf_token %}
+							<input type="hidden" value="{{ comment.comment_id }}" name="upvote">
+							<button id="upvote" type="submit" style="border:none;background:none;"><i class="fa fa-angle-double-up fa-4x" style="color:{%if comment.liked == 1 %}#4CAF50;{%else%}#b2b2b2;{%endif%}"></i></button>
+						</form>
+						<h4 class="likes"> 
+							{{ comment.likes }}
+						</h4>
+						<form id="downvoteForm" method="post", action="">
+							{% csrf_token %}
+							<input type="hidden" value="{{ comment.comment_id }}" name="downvote">
+							<button id="downvote" type="submit" style="border:none;background:none;"><i class="fa fa-angle-double-down fa-4x" style="color:{%if comment.liked == -1 %}#4CAF50;{%else%}#b2b2b2;{%endif%}"></i></button>
+						</form>
+					</div>
+					<div class="col s8" style="display:flex; align-items:center;">
+						<div style="-webkit-transform:translateY(-10%);">
+							<p>{{ comment.comment }}</p>
+						</div>
+					</div>
+					<div style="align-self:flex-end; justify-content:flex-end;">
+						<p style="color:#637370;">{{ comment.time|naturaltime }}</p>
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+	{% endif %}
 {% endblock %}

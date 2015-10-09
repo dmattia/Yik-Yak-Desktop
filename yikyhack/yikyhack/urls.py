@@ -19,4 +19,5 @@ urlpatterns = [
     # user registration
     url(r'^accounts/register/$', 'yikyhack.views.register_user'),
     url(r'^accounts/register_success/$', 'yikyhack.views.register_success'),
+    url(r'^accounts/register_failure/$', 'yikyhack.views.register_failure'),
 ]

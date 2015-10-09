@@ -19,4 +19,7 @@ def user_profile(request):
 	args = {}
 	args.update(csrf(request))
 	args['userForm'] = form
+	args['user'] = request.user
+	args['showSearch'] = False
+	args['active'] = 'update'
 	return render_to_response('profile.html', args)

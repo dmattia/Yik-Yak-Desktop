@@ -11,23 +11,23 @@
 	<ol>
 	{% for yak in yakList %}
 		{% if yak.likes != 10000 %}
-			<div class="yak card z-depth-4 green lighten-4" style="display: flex;">
-				<div class="left" style="float:left; width: 20%;">
+			<div class="yak card z-depth-4 green lighten-5 row" style="display: flex;">
+				<div class="col s3" style="text-align:center;">
 				<form id="upvoteForm" method="post", action="">
 					{% csrf_token %}
 					<input type="hidden" value="{{ yak.message_id }}" name="upvote">
-					<button id="upvote" type="submit" style="border:none;background:none;"><i class="fa fa-angle-double-up fa-4x" style="color:{%if yak.liked == 1 %}#FFF;{%else%}#b2b2b2;{%endif%}"></i></button>
+					<button id="upvote" type="submit" style="border:none;background:none;"><i class="fa fa-angle-double-up fa-4x" style="color:{%if yak.liked == 1 %}#4CAF50;{%else%}#b2b2b2;{%endif%}"></i></button>
 				</form>
-				<h4 class="likes" style="margin-left:{%if yak.likes > 99%}0;{%elif yak.likes > 9%}6px;{%else%}12px;{%endif%}">
+				<h4 class="likes"> 
 					{{ yak.likes }}
 				</h4>
 				<form id="downvoteForm" method="post", action="">
 					{% csrf_token %}
 					<input type="hidden" value="{{ yak.message_id }}" name="downvote">
-					<button id="downvote" type="submit" style="border:none;background:none;"><i class="fa fa-angle-double-down fa-4x" style="color:{%if yak.liked == -1 %}#FFF;{%else%}#b2b2b2;{%endif%}"></i></button>
+					<button id="downvote" type="submit" style="border:none;background:none;"><i class="fa fa-angle-double-down fa-4x" style="color:{%if yak.liked == -1 %}#4CAF50;{%else%}#b2b2b2;{%endif%}"></i></button>
 				</form>
 				</div>
-				<div class="right" style="float:right; width:60%;display:flex;align-items:center">
+				<div class="col s8" style="display:flex; align-items:center;">
 					<div style="-webkit-transform:translateY(-10%);">
 						<p>{{ yak.message }}</p>
 						<a href="{{ yak.message_id }}">{{ yak.comments }} Comments</a>

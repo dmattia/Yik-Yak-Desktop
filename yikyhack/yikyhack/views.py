@@ -35,7 +35,13 @@ def register_user(request):
 		form = YakUserCreationForm(request.POST)
 		if form.is_valid():
 			form.save()
-			return HttpResponseRedirect('/accounts/register_success')
+			return HttpResponseRedirect('/accounts/register_success/')
+		else:
+			#return HttpResponseRedirect('/accounts/register_failure/')
+			args = {}
+			args.update(csrf(request))
+			args['registerForm'] = form
+			return render_to_response('register.html',args)
 	else:
 		# first time on register page
 		args = {}
@@ -45,3 +51,6 @@ def register_user(request):
 
 def register_success(request):
 	return render_to_response('register_success.html')
+
+def register_failure(request):
+	return render_to_response('register_failure.html')

@@ -19,11 +19,11 @@
     </style>
 </head>
 
-<body class="{% if user.is_authenticated %}green lighten-5{% endif %}">
+<body class="{% if user.is_authenticated %}green lighten-4{% endif %}">
 	<paper-header-panel class="flex">
 	<paper-toolbar>
-	    <nav>
-  	    <div class="nav-wrapper">
+	    <nav style="margin-bottom:20px;" class="row">
+  	    <div class="nav-wrapper col s10 offset-s1">
   	      <a href="#" class="brand-logo">
 		    {% if user.is_authenticated %}
 		    {% block header %}{% endblock %}
@@ -34,26 +34,29 @@
   	      <ul id="nav-mobile" class="right hide-on-med-and-down">
 		    {% if user.is_authenticated %}
 		    	<li class="{% if active == 'recent' %} active {% endif %}">
-				<a href="{% url 'blogList' %}">{% trans "Recent Yaks" %}</a>
+				<a class="waves-effect" href="{% url 'blogList' %}">{% trans "Recent Yaks" %}</a>
 			</li>
 		   	<li class="{% if active == 'top' %} active {% endif %}">
-				<a href="{% url 'topYaks' %}">{% trans "Top Yaks" %}</a>
+				<a class="waves-effect" href="{% url 'topYaks' %}">{% trans "Top Yaks" %}</a>
 			</li>
 		    	<li class="{% if active == 'myTop' %} active {% endif %}">
-				<a href="{% url 'myTopYaks' %}">{% trans "My Top Yaks" %}</a>
+				<a class="waves-effect" href="{% url 'myTopYaks' %}">{% trans "My Top Yaks" %}</a>
 			</li>
 		   	<li class="{% if active == 'myYaks' %} active {% endif %}">
-				<a href="{% url 'myYaks' %}">{% trans "My Yaks" %}</a>
+				<a class="waves-effect" href="{% url 'myYaks' %}">{% trans "My Yaks" %}</a>
 			</li>
-			<li><a href="/accounts/profile/">Update Profile</a></li> 
-			<li><a href="/accounts/logout/">Logout</a></li>
+		   	<li class="{% if active == 'update' %} active {% endif %}">
+				<a class="waves-effect" href="/accounts/profile/">Update Profile</a> 
+			</li>
+			<li><a class="waves-effect" href="/accounts/logout/">Logout</a></li>
 		    {% else %}
-			<li><a href="/accounts/login/">Log in</a></li>
+			<li><a class="waves-effect" href="/accounts/login/">Log in</a></li>
+			<li><a class="waves-effect" href="/accounts/register/">Register</a></li>
 		    {% endif %}
   	      </ul>
   	    </div>
   	  </nav>
-	    {% if user.is_authenticated %}
+	    {% if user.is_authenticated and showSearch %}
 	    <div class="row">
 	    <form id="search" class="col s6 offset-s3" method="post", action="", style="margin-top:40px; margin-bottom: 20px;">
 		{% load material_form %} 
