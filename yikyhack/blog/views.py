@@ -44,8 +44,8 @@ def setup(request):
 	return remoteyakker, searchTerm, search
 
 @login_required
-def search(request):
-	yakker, searchTerm, search = setup(request)
+def search(request, searchTerm):
+	yakker, temp, search = setup(request)
 	matchingYaks = set([])
 	yaks = yakker.get_yaks() + yakker.get_area_tops() + yakker.get_my_tops()
 	for yak in yaks:
