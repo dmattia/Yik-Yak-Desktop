@@ -8,10 +8,10 @@ from blog import pygeocoder
 
 @login_required
 def user_profile(request):
+	currentUser = UserProfile.objects.get(user_id=request.user.id)
 	if request.method == 'POST':
 		form = UserProfileForm(request.POST)
 		if form.is_valid():
-			currentUser = UserProfile.objects.get(user_id=request.user.id)
 			currentUser.userID = form.cleaned_data['userID']
 			location = form.cleaned_data['location']
 			pyLocation = pygeocoder.Geocoder.geocode(location)
@@ -22,7 +22,12 @@ def user_profile(request):
 	else:
 		user = request.user
 		profile = user.profile
-		form = UserProfileForm()	
+		locationStr = pygeocoder.Geocoder.reverse_geocode(currentUser.latitude,currentUser.longitude)
+		initialValues = {
+			'userID': currentUser.userID,
+			'location': locationStr
+		}
+		form = UserProfileForm(initial=initialValues)	
 
 	args = {}
 	args.update(csrf(request))
