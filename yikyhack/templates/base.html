@@ -22,6 +22,16 @@
 <body class="{% if user.is_authenticated %}grey lighten-5{% endif %}">
 	<paper-header-panel class="flex">
 	<paper-toolbar>
+	    <ul id="dropdown1" class="dropdown-content">
+	      {% if locations %}
+		{% if ip %}
+		<li><a href="changeLocation/{{latitude}}_{{longitude}}" style="font-size:12px;">Current Location</a></li>
+		{% endif %}
+	      {% for location in locations %}
+		<li><a href="changeLocation/{{location.latitude}}_{{location.longitude}}" style="font-size:12px;">{{ location }}</a></li>
+	      {% endfor %}
+	      {% endif %}
+	    </ul>
 	    <nav style="margin-bottom:20px;" class="row">
   	    <div class="nav-wrapper col s10 offset-s1">
   	      <a href="#" class="brand-logo">
@@ -48,6 +58,11 @@
 		   	<li class="{% if active == 'update' %} active {% endif %}">
 				<a class="waves-effect" href="/accounts/profile/">Update Profile</a> 
 			</li>
+			{% if locations %}
+			<li>
+				<a class="dropdown-button waves-effect waves-light" href="#!" data-beloworigin="true" data-hover="true" data-activates="dropdown1">Location<i class="material-icons right">arrow_drop_down</i></a>
+			</li>
+			{% endif %}
 			<li><a class="waves-effect" href="/accounts/logout/">Logout</a></li>
 		    {% else %}
 			<li><a class="waves-effect" href="/accounts/login/">Log in</a></li>
@@ -95,6 +110,21 @@
 			}
 		}
 	});
+	 $('.dropdown-content').hover(
+				
+               function () {
+		  // entered content
+               }, 
+				
+               function () {
+		  // left content
+		  $(this).css({"display":"none"});
+		  /*$(this).animate({opacity: 0}, 200, function() {
+		    $(this).css({"display":"none"});
+		    $(this).css({"opacity":1});
+		  });*/
+               }
+            );
 	</script>
 </body>
 

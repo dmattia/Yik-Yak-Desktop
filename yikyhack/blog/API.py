@@ -32,10 +32,16 @@ class PeekLocation:
 		self.id = raw['peekID']
 		self.can_submit = bool(raw['canSubmit'])
 		self.name = raw['location']
-		lat = raw['latitude']
-		lon = raw['longitude']
+		self.lat = raw['latitude']
+		self.lon = raw['longitude']
 		d = raw['delta']
-		self.location = Location(lat, lon, d)
+		self.location = Location(self.lat, self.lon, d)
+	def latitude(self):
+		return self.lat
+	def longitude(self):
+		return self.lon
+	def __str__(self):
+		return ''.join([i if ord(i) < 128 else ' ' for i in self.name])
 
 class Comment:
 	def __init__(self, raw, message_id, client):
