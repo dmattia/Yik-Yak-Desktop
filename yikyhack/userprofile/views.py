@@ -12,19 +12,30 @@ def user_profile(request):
 	if request.method == 'POST':
 		form = UserProfileForm(request.POST)
 		if form.is_valid():
-			currentUser.userID = form.cleaned_data['userID']
+			if currentUser.userID != '22CC671C-99CC-4DC3-A145-1779E32A05E1':
+				currentUser.userID = form.cleaned_data['userID']
 			location = form.cleaned_data['location']
-			pyLocation = pygeocoder.Geocoder.geocode(location)
-			currentUser.latitude = pyLocation.latitude
-			currentUser.longitude = pyLocation.longitude
+			try:
+				pyLocation = pygeocoder.Geocoder.geocode(location)
+				currentUser.latitude = pyLocation.latitude
+				currentUser.longitude = pyLocation.longitude
+			except:
+				pass
 			currentUser.save()
 			return HttpResponseRedirect('/accounts/loggedin/')
 	else:
 		user = request.user
 		profile = user.profile
-		locationStr = pygeocoder.Geocoder.reverse_geocode(currentUser.latitude,currentUser.longitude)
+		try:
+			locationStr = pygeocoder.Geocoder.reverse_geocode(currentUser.latitude,currentUser.longitude)
+		except:
+			locationStr = ""
+		if user.username != 'guest':
+			userID = currentUser.userID
+		else:
+			userID = "guest"
 		initialValues = {
-			'userID': currentUser.userID,
+			'userID': userID,
 			'location': locationStr
 		}
 		form = UserProfileForm(initial=initialValues)	

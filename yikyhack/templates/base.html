@@ -1,12 +1,12 @@
 {% load i18n %}
 {% load staticfiles %}
 {% load polymerdep %}
+{% load tz %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
    <script src="{% static 'materialdjango/components/bower_components/webcomponentsjs/webcomponents-lite.js' %}"></script>
     {% include 'material/includes/material_css.html' %}
-    {% include 'material/includes/material_js.html' %}
     {{ "polymer/polymer.html"|dep }}
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'>
@@ -34,7 +34,7 @@
 	    </ul>
 	    <nav style="margin-bottom:20px;" class="row">
   	    <div class="nav-wrapper col s10 offset-s1">
-  	      <a href="#" class="brand-logo">
+  	      <a href="" class="brand-logo">
 		    {% if user.is_authenticated %}
 		    {% block header %}{% endblock %}
 		    {% else %}
@@ -49,18 +49,20 @@
 		   	<li class="{% if active == 'top' %} active {% endif %}">
 				<a class="waves-effect" href="{% url 'topYaks' %}">{% trans "Top Yaks" %}</a>
 			</li>
+			{% if not user.username == 'guest' %}
 		    	<li class="{% if active == 'myTop' %} active {% endif %}">
 				<a class="waves-effect" href="{% url 'myTopYaks' %}">{% trans "My Top Yaks" %}</a>
 			</li>
 		   	<li class="{% if active == 'myYaks' %} active {% endif %}">
 				<a class="waves-effect" href="{% url 'myYaks' %}">{% trans "My Yaks" %}</a>
 			</li>
+			{% endif %}
 		   	<li class="{% if active == 'update' %} active {% endif %}">
 				<a class="waves-effect" href="/accounts/profile/">Update Profile</a> 
 			</li>
 			{% if locations %}
 			<li>
-				<a class="dropdown-button waves-effect waves-light" href="#!" data-beloworigin="true" data-hover="true" data-activates="dropdown1">Location<i class="material-icons right">arrow_drop_down</i></a>
+				<a class="dropdown-button waves-effect waves-light" href="" data-beloworigin="true" data-hover="true" data-activates="dropdown1">Location<i class="material-icons right">arrow_drop_down</i></a>
 			</li>
 			{% endif %}
 			<li><a class="waves-effect" href="/accounts/logout/">Logout</a></li>
@@ -68,6 +70,9 @@
 			<li><a class="waves-effect" href="/accounts/login/">Log in</a></li>
 			<li><a class="waves-effect" href="/accounts/register/">Register</a></li>
 		    {% endif %}
+		    <li>
+			<a class="waves-effect" href="https://github.com/dmattia/Yik-Yak-Desktop"><i class="fa fa-github"></i></a>
+		    </li>
   	      </ul>
   	    </div>
   	  </nav>
@@ -95,6 +100,7 @@
 	    </div>
 	</paper-header-panel>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    	{% include 'material/includes/material_js.html' %}
 	<script>
 		(function(b){window.onbeforeunload=function(a){window.name+=" ["+b(window).scrollTop().toString()+"["+b(window).scrollLeft().toString()};b.maintainscroll=function(){if(0<window.name.indexOf("[")){var a=window.name.split("[");window.name=b.trim(a[0]);window.scrollTo(parseInt(a[a.length-1]),parseInt(a[a.length-2]))}};b.maintainscroll()})(jQuery);
 
@@ -110,7 +116,7 @@
 			}
 		}
 	});
-	 $('.dropdown-content').hover(
+	 $('#dropdown1').hover(
 				
                function () {
 		  // entered content
@@ -126,6 +132,7 @@
                }
             );
 	</script>
+	{% block scripts %}{% endblock %}
 </body>
 
 </html>
