@@ -1,8 +1,5 @@
 yikyhack/yikyhack/settings.py
-yikyhack/blog/locationsetting
-yikyhack/blog/myID
 yikyhack/blog/userID
-yikyhack/blog/nickID
 *.pyc
-run.sh
 *.swp
+*migrations*
