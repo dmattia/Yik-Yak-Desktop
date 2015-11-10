@@ -14,7 +14,8 @@ from hashlib import md5
 
 def parse_time(timestr):
 	format = "%Y-%m-%d %H:%M:%S"
-	return datetime.datetime.strptime(timestr,format)
+	#return datetime.datetime.strptime(timestr,format)
+	return datetime.datetime.strptime(timestr,format) - datetime.timedelta(hours=1)
 
 class Location:
 	def __init__(self, latitude, longitude, delta=None):
@@ -135,6 +136,9 @@ class Yak:
 			self.liked -= 1
 			self.likes -= 1
 			return self.client.downvote_yak(self.message_id)
+	
+	def shortid(self):
+		return self.message_id[2:]
 
 	def report(self):
 		return self.client.report_yak(self.message_id)
