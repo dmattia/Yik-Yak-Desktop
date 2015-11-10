@@ -2,7 +2,7 @@
 {% load i18n %}
 
 {% block header %}
-	Yakarma: {{ yakarma }}
+	Yakarma: {% if not isGuestUser %}{{ yakarma }}{% else %}guest{% endif %}
 {% endblock %}
 
 {% block content %}
@@ -12,18 +12,24 @@
 		{% if yak.likes != 10000 %}
 			<div class="yak card z-depth-4 row white" data-message="{{ yak.message }}" style="display: flex;">
 				<div class="col s3" style="text-align:center;">
-				<form id="upvoteForm" method="post", action="">
+				<form {%if not isGuestUser%}id="{{ yak.shortid }}"{%else%}class="upvoteForm"{%endif%} method="post", action="">
 					{% csrf_token %}
-					<input type="hidden" value="{{ yak.message_id }}" name="upvote">
-					<button id="upvote" type="submit" style="border:none;background:none;"><i class="fa fa-angle-double-up fa-4x" style="color:{%if yak.liked == 1 %}#4CAF50;{%else%}#b2b2b2;{%endif%}"></i></button>
+					<input type="hidden" value="{%if not isGuestUser%}{{ yak.message_id }}{%endif%}" name="upvote">
+					<input type="hidden" value="yak" name="upvote-type">
+					<button id="upvote" type="submit" style="border:none;background:none;">
+						<i {%if not isGuestUser%}id="icon{{yak.shortid}}"{%endif%} class="fa fa-angle-double-up fa-4x {%if isGuestUser%}disabled{%endif%}" style="color:{%if yak.liked == 1 %}#4CAF50;{%else%}#b2b2b2;{%endif%}"></i>
+					</button>
 				</form>
 				<h4 class="likes"> 
 					{{ yak.likes }}
 				</h4>
-				<form id="downvoteForm" method="post", action="">
+				<form {%if not isGuestUser%}id="down{{yak.shortid}}"{%else%}class="downvoteForm"{%endif%} method="post", action="">
 					{% csrf_token %}
-					<input type="hidden" value="{{ yak.message_id }}" name="downvote">
-					<button id="downvote" type="submit" style="border:none;background:none;"><i class="fa fa-angle-double-down fa-4x" style="color:{%if yak.liked == -1 %}#4CAF50;{%else%}#b2b2b2;{%endif%}"></i></button>
+					<input type="hidden" value="{%if not isGuestUser%}{{ yak.message_id }}{%endif%}" name="downvote">
+					<input type="hidden" value="yak" name="downvote_kind">
+					<button id="downvote" type="submit" style="border:none;background:none;">
+						<i {%if not isGuestUser%}id="downicon{{yak.shortid}}"{%endif%} class="fa fa-angle-double-down fa-4x {%if isGuestUser%}disabled{%endif%}" style="color:{%if yak.liked == -1 %}#4CAF50;{%else%}#b2b2b2;{%endif%}"></i>
+					</button>
 				</form>
 				</div>
 				<div class="col s8" style="display:flex; align-items:center;">
@@ -34,7 +40,8 @@
 					{% load humanize %}
 				</div>
 				<div style="align-self:flex-end; justify-content:flex-end;">
-					<p style="color:#637370;">{{ yak.time|naturaltime }}</p>
+					{% load tz %}
+					<p style="color:#637370;">{{ yak.time|localtime|naturaltime }}</p>
 				</div>
 			</div>
 			<div style="margin-top:20px;"></div>
@@ -45,11 +52,11 @@
 	<div class="yakList" style="margin-top:40px;">
 		<div class="yak card z-depth-4 row white" style="padding-top: 5px; padding-bottom: 15px;">
 				<div class="col s3" style="text-align:center;">
-					<button id="upvote" type="submit" style="border:none;background:none;"><i class="fa fa-angle-double-up fa-4x" style="color:{%if yak.liked == 1 %}#4CAF50;{%else%}#b2b2b2;{%endif%}"></i></button>
+					<button class="upvote" type="submit" style="border:none;background:none;"><i class="fa fa-angle-double-up fa-4x" style="color:{%if yak.liked == 1 %}#4CAF50;{%else%}#b2b2b2;{%endif%}"></i></button>
 				<h4 class="likes"> 
 					10000
 				</h4>
-					<button id="downvote" type="submit" style="border:none;background:none;"><i class="fa fa-angle-double-down fa-4x" style="color:{%if yak.liked == -1 %}#4CAF50;{%else%}#b2b2b2;{%endif%}"></i></button>
+					<button class="downvote" type="submit" style="border:none;background:none;"><i class="fa fa-angle-double-down fa-4x" style="color:{%if yak.liked == -1 %}#4CAF50;{%else%}#b2b2b2;{%endif%}"></i></button>
 				</div>
 				<div class="col s8" style="display:flex; align-items:center;">
 					<div style="-webkit-transform:translateY(-10%);">
@@ -63,4 +70,113 @@
 		</div>
 	</div>
 	{% endif %}
+{% endblock %}
+
+{% block scripts %}
+	<script>
+		$('.upvoteForm').on('submit', function(event) {
+			event.preventDefault();
+		});
+		$('.downvoteForm').on('submit', function(event) {
+			event.preventDefault();
+		});
+		{% if not isGuestUser %}
+			$.ajaxSetup({
+		          beforeSend: function(xhr, settings) {
+		                 function getCookie(name) {
+		                    var cookieValue = null;
+		                     if (document.cookie && document.cookie != '') {
+		                     var cookies = document.cookie.split(';');
+		                     for (var i = 0; i < cookies.length; i++) {
+		                             var cookie = jQuery.trim(cookies[i]);
+		                           // Does this cookie string begin with the name we want?
+		                              if (cookie.substring(0, name.length + 1) == (name + '=')) {
+		                                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+		                                 break;
+		                               }
+		                       }
+		                     }
+		                      return cookieValue;
+		                 }
+		                 if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+		                 // Only send the token to relative URLs i.e. locally.
+		                   xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+		                  }
+		         }
+		        });
+	
+			{% for yak in yakList %}
+				$('#{{yak.shortid}}').on('submit', function(event) {
+					event.preventDefault();
+					upvote('{{yak.message_id}}', '{{yak.shortid}}');
+				});
+				$('#down{{yak.shortid}}').on('submit', function(event) {
+					event.preventDefault();
+					downvote('{{yak.message_id}}', '{{yak.shortid}}');
+				});
+			{% endfor %}
+			function downvote(yakID, shortID) {
+				$.ajax({
+					url : "downvote/" + yakID + "/yak/",
+					type : "POST",
+					data : {
+	
+					},
+					success : function(json) {
+						if($('#downicon'+shortID).css('color') == "rgb(178, 178, 178)") {
+							if($('#icon'+shortID).css('color') == "rgb(178, 178, 178)") {
+							$('#down'+shortID).parent().children()[1].innerHTML = 
+								parseInt($('#'+shortID).parent().children()[1].innerHTML) - 1;
+							} else {
+							$('#down'+shortID).parent().children()[1].innerHTML = 
+								parseInt($('#'+shortID).parent().children()[1].innerHTML) - 2;
+							}
+							$('#downicon'+shortID).css('color', '#4CAF50');
+							$('#icon'+shortID).css('color', '#b2b2b2');
+						} else if($('#downicon'+shortID).css('color') == "rgb(76, 175, 80)") {
+							// already upvoted
+							$('#down'+shortID).parent().children()[1].innerHTML = 
+								parseInt($('#'+shortID).parent().children()[1].innerHTML) + 1;
+							$('#downicon'+shortID).css('color', '#b2b2b2');
+							$('#icon'+shortID).css('color', '#b2b2b2');
+						}
+					},
+					error : function(xhr,errmsg,err) {
+						console.log('could not downvote');
+					}
+				});
+			}
+			function upvote(yakID, shortID) {
+				$.ajax({
+					url : "upvote/" + yakID + "/yak/",
+					type : "POST",
+					data : {
+	
+					},
+					success : function(json) {
+						if($('#icon'+shortID).css('color') == "rgb(178, 178, 178)") {
+							if($('#downicon'+shortID).css('color') == "rgb(178, 178, 178)") {
+								$('#'+shortID).parent().children()[1].innerHTML = 
+									parseInt($('#'+shortID).parent().children()[1].innerHTML) + 1;
+							} else {
+							$('#'+shortID).parent().children()[1].innerHTML = 
+								parseInt($('#'+shortID).parent().children()[1].innerHTML) + 2;
+							}
+							$('#icon'+shortID).css('color', '#4CAF50');
+							$('#downicon'+shortID).css('color', '#b2b2b2');
+						} else if($('#icon'+shortID).css('color') == "rgb(76, 175, 80)") {
+							// already upvoted
+							$('#'+shortID).parent().children()[1].innerHTML = 
+								parseInt($('#'+shortID).parent().children()[1].innerHTML) - 1;
+							$('#icon'+shortID).css('color', '#b2b2b2');
+							$('#downicon'+shortID).css('color', '#b2b2b2');
+						}
+					},
+					error : function(xhr,errmsg,err) {
+						console.log('could not upvote');
+					}
+				});
+			}
+		{% endif %}
+	</script>
 {% endblock %}

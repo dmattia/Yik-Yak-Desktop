@@ -10,4 +10,6 @@ urlpatterns = [
     url(r'R/([0-9a-zA-Z]+)/$', views.viewYak, name='yak'),
     url(r'changeLocation/(.*)_(.*)/$', views.changeLocation, name="changeLocation"),
     url(r'^search/([0-9a-zA-Z]+)/', views.search, name='search'),
+    url(r'upvote/R/([0-9a-zA-Z]+)/([a-z]+)/$', views.upvote, name='upvote'),
+    url(r'downvote/R/([0-9a-zA-Z]+)/([a-z]+)/$', views.downvote, name='downvote'),
 ]

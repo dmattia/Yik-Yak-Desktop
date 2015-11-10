@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from userprofile.models import UserProfile
 from django.http import HttpResponse, HttpResponseRedirect
+from django.http import JsonResponse
 from django.contrib.gis.geoip import GeoIP
 from ipware.ip import get_ip
 from django.shortcuts import render
@@ -14,6 +15,9 @@ def setup(request):
 	lat = currentUser.latitude
 	longt = currentUser.longitude
 	userID = currentUser.userID
+	isGuestUser = False
+	if currentUser.username == 'guest':
+		isGuestUser = True
 
 	# Find user location
 	userIP = get_ip(request)
@@ -22,8 +26,8 @@ def setup(request):
 		userLatitude, userLongitude = g.lat_lon(userIP)
 		foundIP = True
 	else:
-		userLatitude = 41.7055716
-		userLongitude = -86.2353388
+		userLatitude = lat
+		userLongitude = longt
 		foundIP = False
 
 	if request.method == 'POST':
@@ -39,13 +43,17 @@ def setup(request):
 		if "upvote" in p:
 			coordlocation = pk.Location(lat, longt)
 			remoteyakker = pk.Yakker(userID, coordlocation, False)
-			remoteyakker.upvote_yak(p["upvote"])
-			remoteyakker.upvote_comment(p["upvote"])
+			if p["upvote-type"] == 'yak':
+				remoteyakker.upvote_yak(p["upvote"])
+			else:
+				remoteyakker.upvote_comment(p["upvote"])
 		if "downvote" in p:
 			coordlocation = pk.Location(lat, longt)
 			remoteyakker = pk.Yakker(userID, coordlocation, False)
-			remoteyakker.downvote_yak(p["downvote"])
-			remoteyakker.downvote_comment(p["downvote"])
+			if p["upvote-type"] == 'yak':
+				remoteyakker.downvote_yak(p["downvote"])
+			else:
+				remoteyakker.downvote_comment(p["downvote"])
 	else:
 		search = searchForm()
 		searchTerm = False
@@ -53,11 +61,29 @@ def setup(request):
 	coordlocation = pk.Location(lat, longt)
 	remoteyakker = pk.Yakker(userID, coordlocation, False)
 
-	return remoteyakker, searchTerm, search, userLatitude, userLongitude, foundIP 
+	return remoteyakker, searchTerm, search, userLatitude, userLongitude, foundIP, isGuestUser
+
+@login_required
+def upvote(request, yakID, upvote_kind):
+	yakker, temp, search, latitude, longitude, ip, isGuestUser = setup(request)
+	if upvote_kind == 'yak':
+		yakker.upvote_yak('R/' + yakID)
+	else:
+		yakker.upvote_comment('R/' + yakID)
+	return HttpResponse("Hello")
+
+@login_required
+def downvote(request, yakID, downvote_kind):
+	yakker, temp, search, latitude, longitude, ip, isGuestUser = setup(request)
+	if downvote_kind == 'yak':
+		yakker.downvote_yak('R/' + yakID)
+	else:
+		yakker.downvote_comment('R/' + yakID)
+	return HttpResponse("Hello")
 
 @login_required
 def search(request, searchTerm):
-	yakker, temp, search, latitude, longitude, ip = setup(request)
+	yakker, temp, search, latitude, longitude, ip, isGuestUser = setup(request)
 	matchingYaks = set([])
 	yaks = yakker.get_yaks() + yakker.get_area_tops() + yakker.get_my_tops()
 	for yak in yaks:
@@ -76,7 +102,7 @@ def search(request, searchTerm):
 
 @login_required
 def index(request):
-	yakker, searchTerm, search, latitude, longitude, ip = setup(request)
+	yakker, searchTerm, search, latitude, longitude, ip, isGuestUser = setup(request)
 	yaks = yakker.get_yaks()
 	searchedYaks = []
 	if searchTerm:
@@ -97,12 +123,13 @@ def index(request):
 		'latitude': latitude,
 		'longitude': longitude,
 		'ip': ip,
+		'isGuestUser': isGuestUser,
 	}
 	return render(request, 'yaksNoComments.html', params)
 
 @login_required
 def top(request):
-	yakker, searchTerm, search, latitude, longitude, ip = setup(request)
+	yakker, searchTerm, search, latitude, longitude, ip, isGuestUser = setup(request)
 	yaks = yakker.get_area_tops()
 	searchedYaks = []
 	if searchTerm:
@@ -119,13 +146,17 @@ def top(request):
 		'yakarma': yakker.get_yakarma,
 		'yakList': searchedYaks,
 		'locations': yakker.get_featured_locations,
-		'yakCount': len(searchedYaks)+1 if searchTerm else len(searchedYaks)
+		'yakCount': len(searchedYaks)+1 if searchTerm else len(searchedYaks),
+		'latitude': latitude,
+		'longitude': longitude,
+		'ip': ip,
+		'isGuestUser': isGuestUser,
 	}
 	return render(request, 'yaksNoComments.html', params)
 
 @login_required
 def myTopYaks(request):
-	yakker, searchTerm, search, latitude, longitude, ip = setup(request)
+	yakker, searchTerm, search, latitude, longitude, ip, isGuestUser = setup(request)
 	yaks = yakker.get_my_tops()
 	searchedYaks = []
 	if searchTerm:
@@ -142,13 +173,17 @@ def myTopYaks(request):
 		'yakarma': yakker.get_yakarma,
 		'yakList': searchedYaks,
 		'locations': yakker.get_featured_locations,
-		'yakCount': len(searchedYaks)+1 if searchTerm else len(searchedYaks)
+		'yakCount': len(searchedYaks)+1 if searchTerm else len(searchedYaks),
+		'latitude': latitude,
+		'longitude': longitude,
+		'ip': ip,
+		'isGuestUser': isGuestUser,
 	}
 	return render(request, 'yaksNoComments.html', params)
 
 @login_required
 def myYaks(request):
-	yakker, searchTerm, search, latitude, longitude, ip = setup(request)
+	yakker, searchTerm, search, latitude, longitude, ip, isGuestUser = setup(request)
 	yaks = yakker.get_my_recent_yaks()
 	searchedYaks = []
 	if searchTerm:
@@ -165,12 +200,16 @@ def myYaks(request):
 		'yakarma': yakker.get_yakarma,
 		'yakList': searchedYaks,
 		'locations': yakker.get_featured_locations,
-		'yakCount': len(searchedYaks)+1 if searchTerm else len(searchedYaks)
+		'yakCount': len(searchedYaks)+1 if searchTerm else len(searchedYaks),
+		'latitude': latitude,
+		'longitude': longitude,
+		'ip': ip,
+		'isGuestUser': isGuestUser,
 	}
 	return render(request, 'yaksNoComments.html', params)
 
 def findYak(request, yakID):
-	yakker, searchTerm, search, latitude, longitude, ip = setup(request)
+	yakker, searchTerm, search, latitude, longitude, ip, isGuestUser = setup(request)
 	yaks = yakker.get_yaks() + yakker.get_area_tops() + yakker.get_my_tops()
 	for yak in yaks:
 		if(yak.message_id == yakID):
@@ -181,10 +220,11 @@ def findYak(request, yakID):
 @login_required
 def viewYak(request, yakNum):
 	# find the yak cooresponding to yakNum
+	setup(request)
 	yak = findYak(request, 'R/' + yakNum)
-	yakker, searchTerm, search, latitude, longitude, ip = setup(request)
+	yakker, searchTerm, search, latitude, longitude, ip, isGuestUser = setup(request)
 	if yak:
-		return render(request, 'yak.html', {'yak': yak, 'yakarma': yakker.get_yakarma})	
+		return render(request, 'yak.html', {'yak': yak, 'yakarma': yakker.get_yakarma, 'isGuestUser': isGuestUser})	
 	return render(request, 'yakNotFound.html');
 
 def changeLocation(request, latitude, longitude):
