@@ -7,7 +7,7 @@ class YakUserCreationForm(UserCreationForm):
 	email = forms.EmailField(required=True)
 	latitude = forms.FloatField(required=True)
 	longitude = forms.FloatField(required=True)
-	userID = forms.CharField(max_length=50,required=True)
+	userID = forms.CharField(max_length=36,min_length=36,required=True)
 
 	class Meta:
 		model = UserProfile

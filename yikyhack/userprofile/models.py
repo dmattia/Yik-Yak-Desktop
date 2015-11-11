@@ -4,7 +4,7 @@ from django.contrib import admin
 
 class UserProfile(User):
 	user = models.OneToOneField(User)
-	userID = models.CharField(max_length=50)
+	userID = models.CharField(max_length=36)
 	latitude = models.FloatField()
 	longitude = models.FloatField()
 	login_count = models.IntegerField()

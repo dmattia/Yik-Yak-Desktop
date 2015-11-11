@@ -6,9 +6,24 @@
 	<form action="/accounts/register/" method="post">
 		{% csrf_token %}
 		{{ registerForm.as_ul }}
-		<button type="submit" name="_submit" class="z-depth-4 waves-effect btn btn-primary btn-lg">
+		<button style="margin-top:10px; margin-bottom:20px;" type="submit" name="_submit" class="z-depth-4 waves-effect btn btn-primary btn-lg">
 			Register<i class="material-icons right">send</i>
 		</button>
 	</form>
+
+	<h3>Finding User ID</h3>
+	<h5>On Iphone</h5>
+	<ol>
+		<li>Download iExplorer here: https://www.macroplant.com/iexplorer/</li>
+		<li>Install and run</li>
+		<li>Plug in iPhone</li>
+		<li>Navigate to /User/Containers/Data/Application</li>
+		<li>Search for the file: engineering.locus.chatter.plist</li>
+		<li>Open file and scroll to the very bottom. Your userid will be shown</li>
+	</ol>
+	<h5>On Android</h5>
+	<ol>
+		<li>Coming Soon!</li>
+	</ol>
 
 {% endblock %}
