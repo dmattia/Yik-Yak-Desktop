@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect
 from django.contrib import auth
 from django.core.context_processors import csrf
 from forms import YakUserCreationForm
+from userprofile.models import UserProfile
 
 def login(request):
 	c = {}
@@ -20,7 +21,9 @@ def auth_view(request):
 		return HttpResponseRedirect('/accounts/invalid/')
 
 def loggedin(request):
-	#return render_to_response('loggedin.html', {'full_name': request.user.username})
+	user = UserProfile.objects.get(user=request.user)
+	user.login_count = user.login_count + 1
+	user.save()
 	return HttpResponseRedirect('/accounts/blog/yaks/')
 
 def invalid_login(request):
@@ -37,7 +40,6 @@ def register_user(request):
 			form.save()
 			return HttpResponseRedirect('/accounts/register_success/')
 		else:
-			#return HttpResponseRedirect('/accounts/register_failure/')
 			args = {}
 			args.update(csrf(request))
 			args['registerForm'] = form

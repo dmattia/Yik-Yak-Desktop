@@ -7,6 +7,7 @@ class UserProfile(User):
 	userID = models.CharField(max_length=50)
 	latitude = models.FloatField()
 	longitude = models.FloatField()
+	login_count = models.IntegerField()
 
 User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])
 
