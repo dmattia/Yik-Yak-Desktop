@@ -6,7 +6,7 @@
 	<p>Your username and password didn't match. Please try again.</p>
 {% endif %}
 
-<form method="post" action="/accounts/auth/">
+<form method="post" onsubmit="disableForm();" id="login_form" action="/accounts/auth/">
 	{% csrf_token %}
 	<label for="username">User Name:</label>
 	<input type="text" name="username" value="" id="username">
@@ -25,4 +25,14 @@
 <div style="margin-bottom:40px;"></div>
 <a href="/accounts/register/">Create Account</a>
 
+{% endblock %}
+
+{% block scripts %}
+	<script>
+		function disableForm() {
+			$('#login_form').submit(function (event) {
+				event.preventDefault();
+			});
+		}
+	</script>
 {% endblock %}
